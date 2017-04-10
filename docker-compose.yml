@@ -28,7 +28,7 @@ services:
                 - INSTALL_ZIP_ARCHIVE=false
                 - INSTALL_MEMCACHED=true
                 - INSTALL_OPCACHE=false
-            dockerfile: Dockerfile-56
+            dockerfile: Dockerfile-70
         volumes_from:
             - volumes_source
         expose:
@@ -49,7 +49,8 @@ services:
         volumes_from:
             - volumes_source
         volumes:
-            - ./logs/nginx/:/var/log/nginx
+            - ./logs/nginx:/var/log/nginx
+            - ./nginx/sites:/etc/nginx/sites-available
         ports:
             - "80:80"
             - "443:443"
@@ -62,8 +63,6 @@ services:
         build: ./mysql
         volumes_from:
             - volumes_data
-        volumes:
-            - ./logs/mysql/:/var/log/mysql
         ports:
             - "3306:3306"
         environment:
@@ -74,16 +73,16 @@ services:
 
 ### Redis Container #########################################
 
-    #redis:
-       # build: ./redis
-       # volumes_from:
-       #     - volumes_data
-       # ports:
-       #     - "6379:6379"
+    # redis:
+    #    build: ./redis
+    #    volumes_from:
+    #        - volumes_data
+    #    ports:
+    #        - "6379:6379"
 
 ### Memcached Container #####################################
- 
-    #memcached:
+
+    # memcached:
     #    build: ./memcached
     #    volumes_from:
     #        - volumes_data
@@ -95,12 +94,12 @@ services:
 ### Elasticsearch Container #######################################
 
     #elasticsearch:
-    #    build: ./elasticsearch
-    #    volumes_from:
-    #        - volumes_data
-    #    ports:
-    #        - "9200:9200"
-    #        - "9300:9300"
+     #   build: ./elasticsearch
+     #   volumes_from:
+     #       - volumes_data
+     #   ports:
+     #       - "9200:9200"
+     #       - "9300:9300"
 
 ### phpMyAdmin Container ##################################
 
@@ -110,8 +109,7 @@ services:
             PMA_ARBITRARY: 1
             MYSQL_USER: homestead
             MYSQL_PASSWORD: secret
-            MYSQL_ROOT_PASSWORD: root  
-
+            MYSQL_ROOT_PASSWORD: root
         volumes_from:
             - volumes_data
         ports:
@@ -124,21 +122,17 @@ services:
     volumes_source:
         image: tianon/true
         volumes:
-            - ~/www:/var/www
-            - ~/www/htdoc:/var/www/htdoc
-
+            #- ../:/var/www
+             - ~/www:/var/www
 ### Databases Data Container ################################
 
     volumes_data:
         image: tianon/true
         volumes:
-            - ./data/mysql/log:/var/log/mysql/
-            - ./data/mysql:/var/lib/mysql 
-            - ./logs/mysql/:/var/log/mysql
+            - ./data/mysql:/var/lib/mysql
             #- ./data/memcached:/var/lib/memcached
             #- ./data/redis:/data
             - ./data/sessions:/sessions
-            #- ./data/elasticsearch/data:/usr/share/elasticsearch/data
+            - ./data/elasticsearch/data:/usr/share/elasticsearch/data
 
 ### Add more Containers below ###############################
-
